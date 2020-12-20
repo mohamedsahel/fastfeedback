@@ -1,41 +1,41 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { Button, Flex, Icon } from '@chakra-ui/react'
 
-import styles from '../styles/Home.module.css'
-import { useAuth } from '../lib/auth'
-
+import { useAuth } from '@/lib/auth'
 
 export default function Home() {
   const auth = useAuth()
 
-  useEffect(() => {
-    console.log(auth)
-  }, [auth])
-
   return (
-    <div className={styles.container}>
+    <Flex
+      as='main'
+      direction='column'
+      align='center'
+      justify='center'
+      h='100vh'>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Fast Feedback</title>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('fast-feedback-app')) {
+            window.location.href = "/dashboard"
+          }
+        `,
+          }}
+        />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Fast Feedback
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-        {
-          !auth.user && <button onClick={() => auth?.signinWithGithub()} >Signin With Github</button>
-        }
-        <div> {auth.user ? auth.user.email : 'Not Authenticated'} </div>
-        {
-          auth.user && <button onClick={() => auth.signout()} >signout</button>
-        }
-      </main>
-    </div>
+      <Icon color='black' name='logo' size='64px' />
+      {auth.user ? (
+        <Button as='a' href='/dashboard'>
+          View Dashboard
+        </Button>
+      ) : (
+        <Button mt={4} size='sm' onClick={(e) => auth.signinWithGithub()}>
+          Sign In
+        </Button>
+      )}
+    </Flex>
   )
 }
